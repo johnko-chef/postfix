@@ -24,7 +24,7 @@ end
 template node['postfix']['virtual_alias_db'] do
   source 'virtual_aliases.erb'
   owner 'root'
-  group 'root'
+  group node['root_group']
   mode 0400
   notifies :run, 'execute[postmap-virtual-alias]', :immediately
   notifies :restart, 'service[postfix]'

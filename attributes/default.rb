@@ -20,7 +20,6 @@ default['postfix']['mail_type']  = 'client'
 default['postfix']['relayhost_role'] = 'relayhost'
 default['postfix']['multi_environment_relay'] = false
 default['postfix']['use_procmail'] = false
-default['postfix']['aliases'] = {}
 default['postfix']['transports'] = {}
 default['postfix']['access'] = {}
 default['postfix']['main_template_source'] = 'postfix'
@@ -33,6 +32,10 @@ when 'smartos'
   default['postfix']['conf_dir'] = '/opt/local/etc/postfix'
   default['postfix']['aliases_db'] = '/opt/local/etc/postfix/aliases'
   default['postfix']['transport_db'] = '/opt/local/etc/postfix/transport'
+when 'freebsd'
+  default['postfix']['conf_dir'] = '/usr/local/etc/postfix'
+  default['postfix']['aliases_db'] = '/etc/aliases'
+  default['postfix']['transport_db'] = '/usr/local/etc/postfix/transport'
 when 'omnios'
   default['postfix']['conf_dir'] = '/opt/omni/etc/postfix'
   default['postfix']['aliases_db'] = 'opt/omni/etc/postfix/aliases'
@@ -131,3 +134,26 @@ end
 
 # Master.cf attributes
 default['postfix']['master']['submission'] = false
+
+
+# OS Aliases
+case node['platform']
+when 'freebsd'
+  default['postfix']['aliases'] = {
+    'MAILER-DAEMON' =>  'postmaster',
+    'bin' =>            'root',
+    'daemon' =>         'root',
+    'named' =>          'root',
+    'nobody' =>         'root',
+    'uucp' =>           'root',
+    'www' =>            'root',
+    'ftp-bugs' =>       'root',
+    'postfix' =>        'root',
+    'manager' =>        'root',
+    'dumper' =>         'root',
+    'operator' =>       'root',
+    'abuse' =>          'postmaster'
+  }
+else
+  default['postfix']['aliases'] = {}
+end

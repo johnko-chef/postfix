@@ -58,7 +58,7 @@ when 'omnios'
   template manifest_path  do
     source 'manifest-postfix.xml.erb'
     owner 'root'
-    group 'root'
+    group node['root_group']
     mode '0644'
     notifies :run, 'execute[load postfix manifest]', :immediately
   end
@@ -78,7 +78,7 @@ end
 unless node['postfix']['sender_canonical_map_entries'].empty?
   template "#{node['postfix']['conf_dir']}/sender_canonical" do
     owner 'root'
-    group 0
+    group node['root_group']
     mode '0644'
     notifies :run, 'execute[update-postfix-sender_canonical]'
     notifies :reload, 'service[postfix]'
@@ -97,7 +97,7 @@ end
 if !node['postfix']['smtp_generic_map_entries'].empty?
   template "#{node['postfix']['conf_dir']}/smtp_generic" do
     owner 'root'
-    group 0
+    group node['root_group']
     mode  '0644'
     notifies :run, 'execute[update-postfix-smtp_generic]'
     notifies :reload, 'service[postfix]'
@@ -112,7 +112,7 @@ end
   template "#{node['postfix']['conf_dir']}/#{cfg}.cf" do
     source "#{cfg}.cf.erb"
     owner 'root'
-    group 0
+    group node['root_group']
     mode '0644'
     notifies :restart, 'service[postfix]'
     variables(settings: node['postfix'][cfg])
