@@ -1,6 +1,9 @@
 # encoding: utf-8
 # Author:: Joshua Timberman <joshua@getchef.com>
 # Copyright:: Copyright 2009-2014, Chef Software, Inc.
+# Author:: John Ko <git@johnko.ca>
+# Copyright:: Copyright 2014, John Ko
+#
 # License:: Apache License, Version 2.0
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
