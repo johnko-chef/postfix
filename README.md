@@ -12,6 +12,7 @@ Requirements
 - Debian 6.0+
 - RHEL/CentOS/Scientific 5.7+, 6.2+
 - Amazon Linux (as of AMIs created after 4/9/2012)
+- FreeBSD
 
 May work on other platforms with or without modification.
 
@@ -250,10 +251,11 @@ override_attributes(
 
 License & Authors
 -----------------
-- Author:: Joshua Timberman <joshua@getchef.com>
-
 ```text
+Author:: Joshua Timberman <joshua@getchef.com>
 Copyright:: 2009-2014, Chef Software, Inc
+Author:: John Ko <git@johnko.ca>
+Copyright:: 2014, John Ko
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
