@@ -129,7 +129,7 @@ end
 end
 
 execute "postfix-setpermission" do
-  command "postfix -c #{node['postfix']['conf_dir']} set-permissions"
+  command "postfix set-permissions"
   not_if "postfix check"
 end
 
