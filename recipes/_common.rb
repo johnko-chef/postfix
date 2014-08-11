@@ -22,16 +22,18 @@ package 'postfix'
 
 package 'procmail' if node['postfix']['use_procmail']
 
+include_recipe 'svc'
+
 case node['platform_family']
 when 'rhel', 'fedora'
-  service 'sendmail' do
+  svc 'sendmail' do
     action :nothing
   end
 
   execute 'switch_mailer_to_postfix' do
     command '/usr/sbin/alternatives --set mta /usr/sbin/sendmail.postfix'
-    notifies :stop, 'service[sendmail]'
-    notifies :start, 'service[postfix]'
+    notifies :stop, 'svc[sendmail]'
+    notifies :start, 'svc[postfix]'
     not_if '/usr/bin/test /etc/alternatives/mta -ef /usr/sbin/sendmail.postfix'
   end
 when 'omnios'
@@ -66,7 +68,7 @@ when 'omnios'
   execute 'load postfix manifest' do
     action :nothing
     command "svccfg import #{manifest_path}"
-    notifies :restart, 'service[postfix]'
+    notifies :restart, 'svc[postfix]'
   end
 end
 
@@ -81,7 +83,7 @@ unless node['postfix']['sender_canonical_map_entries'].empty?
     group 0
     mode '0644'
     notifies :run, 'execute[update-postfix-sender_canonical]'
-    notifies :reload, 'service[postfix]'
+    notifies :reload, 'svc[postfix]'
   end
 
   unless node['postfix']['main'].key?('sender_canonical_maps')
@@ -100,7 +102,7 @@ unless node['postfix']['smtp_generic_map_entries'].empty?
     group 0
     mode  '0644'
     notifies :run, 'execute[update-postfix-smtp_generic]'
-    notifies :reload, 'service[postfix]'
+    notifies :reload, 'svc[postfix]'
   end
 
   unless node['postfix']['main'].key?('smtp_generic_maps')
@@ -114,13 +116,13 @@ end
     owner 'root'
     group 0
     mode '0644'
-    notifies :restart, 'service[postfix]'
+    notifies :restart, 'svc[postfix]'
     variables(settings: node['postfix'][cfg])
     cookbook node['postfix']["#{cfg}_template_source"]
   end
 end
 
-service 'postfix' do
+svc 'postfix' do
   supports status: true, restart: true, reload: true
   action :enable
 end

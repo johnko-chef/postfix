@@ -54,6 +54,6 @@ template node['postfix']['sasl_password_file'] do
   group node['postfix']['rootgroup']
   mode 0400
   notifies :run, 'execute[postmap-sasl_passwd]', :immediately
-  notifies :restart, 'service[postfix]'
+  notifies :restart, 'svc[postfix]'
   variables(settings: node['postfix']['sasl'])
 end
