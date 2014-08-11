@@ -185,6 +185,17 @@ else
   default['postfix']['aliases'] = {}
 end
 
+# if freebsd jail, use interface ip
+case node['platform']
+when 'freebsd'
+  if node[:virtualization][:system] == "jail"
+    if node[:virtualization][:role] == "guest"
+      set['postfix']['main']['inet_interfaces'] = node['ipaddress']
+    end
+  end
+end
+
+# root group
 default['postfix']['rootgroup']    = case node['platform_family']
                                      when 'freebsd'
                                        'wheel'
