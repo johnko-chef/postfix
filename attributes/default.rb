@@ -20,7 +20,6 @@ default['postfix']['mail_type']  = 'client'
 default['postfix']['relayhost_role'] = 'relayhost'
 default['postfix']['multi_environment_relay'] = false
 default['postfix']['use_procmail'] = false
-default['postfix']['aliases'] = {}
 default['postfix']['transports'] = {}
 default['postfix']['access'] = {}
 default['postfix']['virtual_aliases'] = {}
@@ -36,6 +35,10 @@ when 'smartos'
   default['postfix']['transport_db'] = '/opt/local/etc/postfix/transport'
   default['postfix']['access_db'] = '/opt/local/etc/postfix/access'
   default['postfix']['virtual_alias_db'] = '/opt/local/etc/postfix/virtual'
+when 'freebsd'
+  default['postfix']['conf_dir'] = '/usr/local/etc/postfix'
+  default['postfix']['aliases_db'] = '/etc/aliases'
+  default['postfix']['transport_db'] = '/usr/local/etc/postfix/transport'
 when 'omnios'
   default['postfix']['conf_dir'] = '/opt/omni/etc/postfix'
   default['postfix']['aliases_db'] = 'opt/omni/etc/postfix/aliases'
@@ -137,3 +140,65 @@ end
 
 # Master.cf attributes
 default['postfix']['master']['submission'] = false
+
+
+# OS Aliases
+case node['platform']
+when 'freebsd'
+  default['postfix']['aliases'] = {
+    'MAILER-DAEMON'  =>  'postmaster',
+    'postmaster'     =>  'root',
+    '_dhcp'          =>  'root',
+    '_pflogd'        =>  'root',
+    'auditdistd'     =>  'root',
+    'bin'            =>  'root',
+    'bind'           =>  'root',
+    'daemon'         =>  'root',
+    'games'          =>  'root',
+    'hast'           =>  'root',
+    'kmem'           =>  'root',
+    'mailnull'       =>  'postmaster',
+    'man'            =>  'root',
+    'news'           =>  'root',
+    'nobody'         =>  'root',
+    'operator'       =>  'root',
+    'pop'            =>  'root',
+    'proxy'          =>  'root',
+    'smmsp'          =>  'postmaster',
+    'sshd'           =>  'root',
+    'system'         =>  'root',
+    'toor'           =>  'root',
+    'tty'            =>  'root',
+    'usenet'         =>  'news',
+    'uucp'           =>  'root',
+    'abuse'          =>  'postmaster',
+    'security'       =>  'root',
+    'ftp'            =>  'root',
+    'ftp-bugs'       =>  'ftp',
+    'named'          =>  'root',
+    'www'            =>  'root',
+    'postfix'        =>  'root',
+    'manager'        =>  'root',
+    'dumper'         =>  'root'
+  }
+else
+  default['postfix']['aliases'] = {}
+end
+
+# if freebsd jail, use interface ip
+case node['platform']
+when 'freebsd'
+  if node[:virtualization][:system] == "jail"
+    if node[:virtualization][:role] == "guest"
+      set['postfix']['main']['inet_interfaces'] = node['ipaddress']
+    end
+  end
+end
+
+# root group
+default['postfix']['rootgroup']    = case node['platform_family']
+                                     when 'freebsd'
+                                       'wheel'
+                                     else
+                                       'root'
+                                     end
