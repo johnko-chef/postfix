@@ -22,8 +22,6 @@ package 'postfix'
 
 package 'procmail' if node['postfix']['use_procmail']
 
-include_recipe 'svc'
-
 case node['platform_family']
 when 'freebsd'
 
