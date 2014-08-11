@@ -184,3 +184,10 @@ when 'freebsd'
 else
   default['postfix']['aliases'] = {}
 end
+
+default['postfix']['rootgroup']    = case node['platform_family']
+                                     when 'freebsd'
+                                       'wheel'
+                                     else
+                                       'root'
+                                     end
