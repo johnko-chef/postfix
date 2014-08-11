@@ -25,6 +25,21 @@ package 'procmail' if node['postfix']['use_procmail']
 include_recipe 'svc'
 
 case node['platform_family']
+when 'freebsd'
+
+  svc 'sendmail' do
+    action [ :disable, :stop ]
+  end
+
+  %w(/var/spool/postfix /var/spool/postfix/active /var/spool/postfix/bounce /var/spool/postfix/corrupt /var/spool/postfix/defer /var/spool/postfix/deferred /var/spool/postfix/flush /var/spool/postfix/hold /var/spool/postfix/incoming /var/spool/postfix/maildrop /var/spool/postfix/pid /var/spool/postfix/private /var/spool/postfix/public /var/spool/postfix/saved /var/spool/postfix/trace).each do |k|
+    directory k do
+      owner 'postfix'
+      group 'postfix'
+      mode 0600
+      action :create
+    end
+  end
+
 when 'rhel', 'fedora'
   svc 'sendmail' do
     action :nothing
