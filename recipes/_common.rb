@@ -31,15 +31,6 @@ when 'freebsd'
     action [ :disable, :stop ]
   end
 
-  %w(/var/spool/postfix /var/spool/postfix/active /var/spool/postfix/bounce /var/spool/postfix/corrupt /var/spool/postfix/defer /var/spool/postfix/deferred /var/spool/postfix/flush /var/spool/postfix/hold /var/spool/postfix/incoming /var/spool/postfix/maildrop /var/spool/postfix/pid /var/spool/postfix/private /var/spool/postfix/public /var/spool/postfix/saved /var/spool/postfix/trace).each do |k|
-    directory k do
-      owner 'postfix'
-      group 'postfix'
-      mode 0600
-      action :create
-    end
-  end
-
 when 'rhel', 'fedora'
   svc 'sendmail' do
     action :nothing
@@ -135,6 +126,11 @@ end
     variables(settings: node['postfix'][cfg])
     cookbook node['postfix']["#{cfg}_template_source"]
   end
+end
+
+execute "postfix-setpermission" do
+  command "postfix -c #{node['postfix']['conf_dir']} set-permissions"
+  not_if "postfix check"
 end
 
 svc 'postfix' do
