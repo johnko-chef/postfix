@@ -14,6 +14,14 @@ smtp      inet  n       -       n       -       -       smtpd
 #smtpd     pass  -       -       n       -       -       smtpd
 #dnsblog   unix  -       -       n       -       0       dnsblog
 #tlsproxy  unix  -       -       n       -       0       tlsproxy
+<% if @settings['submission'] -%>
+########## Start Not FreeBSD default
+submission inet n       -       n       -       -       smtpd
+  -o smtpd_enforce_tls=yes
+  -o smtpd_sasl_auth_enable=yes
+  -o smtpd_client_restrictions=permit_sasl_authenticated,reject
+########## End Not FreeBSD default
+<% end -%>
 #submission inet n       -       n       -       -       smtpd
 #  -o syslog_name=postfix/submission
 #  -o smtpd_tls_security_level=encrypt
@@ -51,7 +59,12 @@ flush     unix  n       -       n       1000?   0       flush
 proxymap  unix  -       -       n       -       -       proxymap
 proxywrite unix -       -       n       -       1       proxymap
 smtp      unix  -       -       n       -       -       smtp
+########## Start Not FreeBSD default
+# When relaying mail as backup MX, disable fallback_relay to avoid MX loops
+# relay line is default, but -o smtp_fallback_relay= is not
 relay     unix  -       -       n       -       -       smtp
+   -o smtp_fallback_relay=
+########## End Not FreeBSD default
 #       -o smtp_helo_timeout=5 -o smtp_connect_timeout=5
 showq     unix  n       -       n       -       -       showq
 error     unix  -       -       n       -       -       error
