@@ -83,6 +83,27 @@ when 'smartos'
   cafile = '/opt/local/etc/postfix/cacert.pem'
 when 'rhel'
   cafile = '/etc/pki/tls/cert.pem'
+when 'freebsd'
+  # start defaults in 2.11.1_2,1 on freebsd:10:x86:64
+    default['postfix']['main']['queue_directory'] = '/var/spool/postfix'
+    default['postfix']['main']['command_directory'] = '/usr/local/sbin'
+    default['postfix']['main']['daemon_directory'] = '/usr/local/libexec/postfix'
+    default['postfix']['main']['data_directory'] = '/var/db/postfix'
+    default['postfix']['main']['mail_owner'] = 'postfix'
+    default['postfix']['main']['unknown_local_recipient_reject_code'] = '550'
+    default['postfix']['main']['mynetworks_style'] = 'host'
+    default['postfix']['main']['debug_peer_level'] = '2'
+    default['postfix']['main']['debugger_command'] = 'PATH=/bin:/usr/bin:/usr/local/bin:/usr/X11R6/bin ddd $daemon_directory/$process_name $process_id & sleep 5'
+    default['postfix']['main']['sendmail_path'] = '/usr/local/sbin/sendmail'
+    default['postfix']['main']['newaliases_path'] = '/usr/local/bin/newaliases'
+    default['postfix']['main']['mailq_path'] = '/usr/local/bin/mailq'
+    default['postfix']['main']['setgid_group'] = 'maildrop'
+    default['postfix']['main']['html_directory'] = '/usr/local/share/doc/postfix'
+    default['postfix']['main']['manpage_directory'] = '/usr/local/man'
+    default['postfix']['main']['sample_directory'] = '/usr/local/etc/postfix'
+    default['postfix']['main']['readme_directory'] = '/usr/local/share/doc/postfix'
+    default['postfix']['main']['inet_protocols'] = 'ipv4'
+  # end defaults in 2.11.1_2,1 on freebsd:10:x86:64
 else
   cafile = "#{node['postfix']['conf_dir']}/cacert.pem"
 end
