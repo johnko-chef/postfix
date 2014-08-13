@@ -171,7 +171,7 @@ case node['platform']
 when 'freebsd'
   default['postfix']['aliases'] = {
     'MAILER-DAEMON'  =>  'postmaster',
-    'postmaster'     =>  'root',
+   #'postmaster'     =>  'root', # defined in file
     '_dhcp'          =>  'root',
     '_pflogd'        =>  'root',
     'auditdistd'     =>  'root',
